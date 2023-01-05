@@ -1,0 +1,39 @@
+{
+  "name": "@wkr/assemblyscript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "assembly/index.ts",
+  "ascMain": "assembly/index.ts",
+  "scripts": {
+    "test": "node tests",
+    "asbuild:debug": "asc assembly/index.ts --use abort=assembly/index/abort --target debug",
+    "asbuild:release": "asc assembly/index.ts --use abort=assembly/index/abort --target release",
+    "asbuild:test": "asc testing/tests/add.ts --outFile testing/builds/myModule.wasm --textFile testing/builds/myModule.wat --use abort=testing/tests/add/abort",
+    "asbuild": "npm run asbuild:debug && npm run asbuild:release",
+    "start": "npx serve .",
+    "build:transform": "tsc -p ./transform"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@assemblyscript/wasi-shim": "^0.1.0",
+    "@types/node": "^18.8.0"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./build/release.js",
+      "types": "./build/release.d.ts"
+    }
+  },
+  "dependencies": {
+    "@ason/assembly": "^0.11.1",
+    "@wapc/as-guest": "^0.3.1",
+    "@wapc/as-msgpack": "^0.1.15",
+    "as-wasi": "^0.5.1",
+    "assemblyscript": "^0.25.2",
+    "assemblyscript-json": "^1.1.0",
+    "assemblyscript-regex": "^1.6.4",
+    "typescript": "^4.8.4"
+  }
+}

@@ -1,0 +1,32 @@
+{
+    "name": "@wkr/transform",
+    "version": "0.5.0",
+    "description": "JSON encoder/decoder for AssemblyScript",
+    "main": "./lib/index.js",
+    "author": "Jairus Tanaka",
+    "contributors": [
+        "DogWhich"
+    ],
+    "license": "MIT",
+    "devDependencies": {},
+    "dependencies": {
+        
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/JairusSW/as-json.git"
+    },
+    "keywords": [
+        "assemblyscript",
+        "json",
+        "serialize",
+        "deserialize",
+        "serde"
+    ],
+    "bugs": {
+        "url": "https://github.com/JairusSW/as-json/issues"
+    },
+    "homepage": "https://github.com/JairusSW/as-json#readme",
+    "type": "module",
+    "exports": "./lib/index.js"
+}
