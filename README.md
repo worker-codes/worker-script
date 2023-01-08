@@ -19,9 +19,6 @@ AssemblyScript is a programming language that is designed to be a subset of Type
 
 The runtime is based on Wasm, with a proxy-appropriate set of Wasm libraries. There are built in APIs for file access, database, low level caching, and HTTP requests/responses. When possible, we use WhatWG standards (like `fetch`, `Request`, `Response`, `Cache` `Url`, `ReadableStream`, `Crypto`, `BroadcastChannel`, `File`).
 
-You can [use it locally](#hello-world) for development and testing, and [deploy it to Worker's fleet](#deployment) of edge servers for production use.
-
-
 # Getting Started
 
 ## Installation
@@ -82,14 +79,14 @@ open http://localhost:3000
 
 Simply put:
 
-- Uses a basic webpack configuration to bundle your javascript
+- Uses assemblyscript to compile your app to Wasm
 - Assumes the presence of  `index.ts`
 - You can customize everything by creating a `webpack.wkr.config.ts` which will be loaded for you
-- Use npm packages compatible with the v8 javascript engine, you don't have access to node.ts-specific concepts or packages.
+- Use npm packages compatible with assemblyscript, you don't have access to typescript specific concepts or packages.
 
 ### Configuration
 
-By default, wkr will read your `.wkr.toml` file in your current working directory.
+By default, worker will read your `.wkr.toml` file in your current working directory.
 
 ```toml
 # .wkr.toml
@@ -109,8 +106,8 @@ Properties:
 
 - `name` - the worker.codes app name, can be ommitted, useful for deployment purposes
 - `version` - the worker.codes app version, can be ommitted, useful for deployment purposes
-- `env` - settings for your applications, accessible in your code via the global variable `app.env`
-- `files` - array of files, relative to your `.wkr.toml` to include in the deployment. Can be accessed via `fetch("file://path/to/file")`
+- `env` - accessible in your code via the enviroment variable `process.env`
+- `files` - array of files, relative to your `.wkr.toml` to include in the deployment. Can be accessed via `file("/path/to/file")`
 
 ### Secrets
 
@@ -122,23 +119,23 @@ You can require secrets in your app.env like this:
 name = "wasmtest"
 version = "0.1.0"
 env = {
-    fromSecret = "secretKey"
+    database secrets = <your secret value>
 }
 ```
 
 In your code, you can seamlessly use this value like:
 
 ```ts
-app.env.secretThing
+app.env.database secrets
 ```
 
-When deployed on worker.codes, secrets are fetched from an encrypted store. You need to pre-define your secrets via `wkr secrets:set <key> <value>`.
+When deployed on worker.codes, secrets are fetched from an encrypted location. You need to pre-define your secrets via `wkr secrets:set <key> <value>`.
 
 Locally, you need to define them in a `.wkr.secrets.toml` file, make sure you add it to your `.gitignore` as it can contain sensitive data. Example file.
 
 ```toml
 # .wkr.secrets.toml
-secretKey = <your secret value>
+database_secret = <your secret value>
 ```
 
 ## Testing
