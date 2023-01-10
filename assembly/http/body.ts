@@ -1,7 +1,7 @@
 import { TextDecoder, TextEncoder } from "./text-encoding";
 import { JSON } from "assemblyscript-json/assembly";
 import FormData from "./form_data";
-import { URLSearchParams } from "../url/url_search_params";
+import { URLSearchParams } from "../url";
 import Blob from "./blob";
 
 export class Body {

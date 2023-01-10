@@ -3,7 +3,7 @@
  * @private
  */
 // import { stringify } from "querystring"
-import { URLSearchParams } from "../url/url_search_params"
+import { URLSearchParams } from "../url"
 
 /**
  * Class representing a fetch response.
