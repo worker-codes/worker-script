@@ -1,5 +1,6 @@
 import { Decoder, Writer, Encoder, Sizer } from "@wapc/as-msgpack";
-import { Headers, Request, Response, ResponseInit } from "../http";
+import { Headers, ReadableStream, Request, Response, ResponseInit } from "../http";
+import { ReadableStreamDefaultController } from "../http/stream/read-stream";
 import { hostCall, Result } from "../worker/wapc";
 
 export class FetchInit {
@@ -34,9 +35,9 @@ class FetchRequest {
     method: string;
     url: string;
     headers: Headers;
-    client_rid: u32 | null = null;
+    client_rid: u32;
     has_body: bool;
-    body_length: u32 | null = null;
+    body_length: u32;
     data: ArrayBuffer | null = null;
 
     encode(writer: Writer): void {
@@ -46,7 +47,8 @@ class FetchRequest {
         writer.writeString("url");
         writer.writeString(this.url);
         writer.writeString("headers");
-        writer.writeByteArray(this.headers.toBuffer());
+        // writer.writeByteArray(this.headers.toBuffer());
+        this.headers.encode(writer);
         writer.writeString("client_rid");
         if (this.client_rid == null) {
             writer.writeNil();
@@ -56,15 +58,11 @@ class FetchRequest {
         writer.writeString("has_body");
         writer.writeBool(this.has_body);
         writer.writeString("body_length");
-        if (this.body_length == null) {
-            writer.writeNil();
+        writer.writeUInt32(this.body_length);
+        if (this.data != null) {
+            writer.writeByteArray(this.data as ArrayBuffer);            
         } else {
-            writer.writeUInt32(this.body_length);
-        }
-        if (this.data == null) {
             writer.writeNil();
-        } else {
-            writer.writeByteArray(this.data);
         }
     }
 
@@ -79,8 +77,8 @@ class FetchRequest {
 }
 class FetchReturn {
     request_rid: u32;
-    request_body_rid: u32 | null = null;
-    // cancel_handle_rid: u32 | null = null;
+    request_body_rid: u32;
+    // cancel_handle_rid: u32;
 
     decode(reader: Decoder): void {
         var numFields = reader.readMapSize();
@@ -176,12 +174,26 @@ class FetchResponse {
 
 }
 
+function intToMsg(int:u32):ArrayBuffer{
+    const sizer = new Sizer();
+    sizer.writeUInt32(int);
+    const buffer = new ArrayBuffer(sizer.length);
+    const encoder = new Encoder(buffer);
+    encoder.writeUInt32(int);
+
+    return buffer;
+}
+    
+
+
 
 export function fetch(request: Request, options: FetchInit | null = null): Result<Response> {
 
     let body = request.arrayBuffer();
+    let has_body = true;
     if (body == null) {
         body = new ArrayBuffer(0);
+        has_body = false;
     }
 
     let request_headers = new Headers();
@@ -192,13 +204,14 @@ export function fetch(request: Request, options: FetchInit | null = null): Resul
         request_headers = request.headers
     }
 
+    // @ts-ignore
     const fetch_request: FetchRequest = {
         method: request.method,
         // redirect: request.redirect,
         url: request.url,
         headers: request_headers,
         client_rid: 0,
-        has_body: true,
+        has_body: has_body,
         body_length: body.byteLength,
     }
 
@@ -207,37 +220,60 @@ export function fetch(request: Request, options: FetchInit | null = null): Resul
     // initalize fetch
     let result = hostCall("fetch", "init", "", buffer);
     if (result.isOk) {
+
         let result_buffer = result.get();    
+        console.log("result_buffer "+ result_buffer.byteLength.toString());
         
-        const fetch_response = new FetchResponse();
-        fetch_response.fromBuffer(result_buffer);   
+        
+        const fetch_return = new FetchReturn();
+        fetch_return.fromBuffer(result_buffer);   
+        console.log("fetch_return.request_rid " + fetch_return.request_rid.toString());
+        console.log("fetch_return.request_body_rid " + fetch_return.request_body_rid.toString());
        
-        let header = new Headers();
-        let r_header = fetch_response.headers;
-        for (var i = 0; i < r_header.length; i++) {
-            let key = r_header[i][0];
-            let value = r_header[i];
-            header.set(key, value)
+        let request_rid_buffer =  intToMsg(fetch_return.request_rid);
+        let result_send = hostCall("fetch", "send", "", request_rid_buffer);
+        if (result_send.isOk) {
+
+            let result_buffer = result_send.get();
+            console.log("result_buffer " + result_buffer.byteLength.toString());
+
+            const fetch_response = new FetchResponse();
+            fetch_response.fromBuffer(result_buffer);
+            console.log("fetch_response.status " + fetch_response.status.toString());
+            console.log("fetch_response.status_text " + fetch_response.status_text);
+            console.log("fetch_response.url " + fetch_response.url);
+            console.log("fetch_response.response_rid " + fetch_response.response_rid.toString());
+            console.log("fetch_response.headers " + fetch_response.headers.toString());
+
+
+            let headers = new Headers();
+            for (let i = 0; i < fetch_response.headers.length; i++) {
+                let header = fetch_response.headers[i];
+                headers.set(header[0], header[1].split(","));
+            }
+
+            let _controller: ReadableStreamDefaultController = new ReadableStreamDefaultController();
+
+            let init = new ResponseInit();
+            init.status = fetch_response.status;
+            init.statusText = fetch_response.status_text;
+            init.headers = headers;          
+
+
+            let response = new Response(fetch_response.body, init);
+            response._bodyStream = new ReadableStream(fetch_response.response_rid)
+            return Result.ok(response)
+
+        } else {
+            let err = result_send.error()
+
+            return Result.error<Response>(changetype<Error>(err));
         }
-    
-        let init: ResponseInit = {
-            status: fetch_response.status,
-            headers: header,
-            statusText: fetch_response.status_text,
-            url: request.url,
-        }
-        if (requestBodyRid !== null) {
-
-        }
 
 
-
-
-
-
-
-        let response = new Response(fetch_response.body, init);
-        return Result.ok(response)
+        // let response = new Response(fetch_response.body, init);
+        // return Result.ok(response)
+        return Result.error<Response>(changetype<Error>("err"));
 
     } else {
         let err = result.error()

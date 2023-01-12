@@ -4,6 +4,7 @@ export { Request, RequestInit } from "./request";
 export { Headers } from "./headers";
 export { TextDecoder, TextEncoder } from "./text-encoding";
 export { Status } from "./status";
+export { ReadableStream, ReadResponse, ReadableStreamBodyReader, ReadableStreamReader } from "./stream/read-stream";
 // export { crypto } from "../crypto/crypto"
 
 import Blob from "./blob"

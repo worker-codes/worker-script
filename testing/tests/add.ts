@@ -53,129 +53,129 @@ import { Value } from "/home/dallen/WorkerCodes/WASM/worker-script/assembly/data
 //     });
 // });
 
-describe("database", () => {
-    test("connect_to_database", () => {
-        let config: Config = {
-            url: "test",
-            // username: "localhost",
-            // password: "5432",
-            // host: "5432",
-            // port: 5432,
-        };
+// describe("database", () => {
+//     test("connect_to_database", () => {
+//         let config: Config = {
+//             url: "test",
+//             // username: "localhost",
+//             // password: "5432",
+//             // host: "5432",
+//             // port: 5432,
+//         };
 
-        let result = connect(config)
+//         let result = connect(config)
 
-    });
+//     });
 
-    test("query_database", () => {
-        let config: Config = {
-            url: "test",
-            // username: "localhost",
-            // password: "5432",
-            // host: "5432",
-            // port: "5432",
-        };
+//     test("query_database", () => {
+//         let config: Config = {
+//             url: "test",
+//             // username: "localhost",
+//             // password: "5432",
+//             // host: "5432",
+//             // port: "5432",
+//         };
 
-        let result = connect(config)
-        if (result.isOk) {
-            let connection = result.get();
+//         let result = connect(config)
+//         if (result.isOk) {
+//             let connection = result.get();
 
-            let args = new Args();
-            args.add(10);
-            // args.add("test");
-            // args.add(true);
-            // args.addInt32(22);
-            // args.add(3.88);
-            // args.addNull();
-            // args.add<null>(null);
-            // args.add("test").add("test2").add(1).add(true).add(1.55);
-            console.log(args.length.toString());
-            console.log(args.toBuffer().byteLength.toString());
+//             let args = new Args();
+//             args.add(10);
+//             // args.add("test");
+//             // args.add(true);
+//             // args.addInt32(22);
+//             // args.add(3.88);
+//             // args.addNull();
+//             // args.add<null>(null);
+//             // args.add("test").add("test2").add(1).add(true).add(1.55);
+//             console.log(args.length.toString());
+//             console.log(args.toBuffer().byteLength.toString());
 
-            // args.decode();
-            // return;
+//             // args.decode();
+//             // return;
             
-            // let rows = connection.query("SELECT 1");
-            // let result_ = connection.query("SELECT * FROM Track LIMIT ?;", args);
-            // console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||");
-            // type Row = Map<string, Value>
-            // let type_name = nameof<Map<string, Value>>();
-            // console.log(type_name);
+//             // let rows = connection.query("SELECT 1");
+//             // let result_ = connection.query("SELECT * FROM Track LIMIT ?;", args);
+//             // console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||");
+//             // type Row = Map<string, Value>
+//             // let type_name = nameof<Map<string, Value>>();
+//             // console.log(type_name);
 
-/*            
-            CREATE TABLE coffees (
-                id INTEGER PRIMARY KEY,
-                coffee_name TEXT NOT NULL,
-                price REAL NOT NULL
-            );
-            INSERT INTO coffees VALUES (null, 'Colombian', 7.99);
-            INSERT INTO coffees VALUES (null, 'French_Roast', 8.99);
-            INSERT INTO coffees VALUES (null, 'Espresso', 9.99);
-            INSERT INTO coffees VALUES (null, 'Colombian_Decaf', 8.99);
-            INSERT INTO coffees VALUES (null, 'French_Roast_Decaf', 9.99);
- */
-            let result_ = connection.transaction((tx:Transaction): Result<ExecutedQuery> => {
+// /*            
+//             CREATE TABLE coffees (
+//                 id INTEGER PRIMARY KEY,
+//                 coffee_name TEXT NOT NULL,
+//                 price REAL NOT NULL
+//             );
+//             INSERT INTO coffees VALUES (null, 'Colombian', 7.99);
+//             INSERT INTO coffees VALUES (null, 'French_Roast', 8.99);
+//             INSERT INTO coffees VALUES (null, 'Espresso', 9.99);
+//             INSERT INTO coffees VALUES (null, 'Colombian_Decaf', 8.99);
+//             INSERT INTO coffees VALUES (null, 'French_Roast_Decaf', 9.99);
+//  */
+//             let result_ = connection.transaction((tx:Transaction): Result<ExecutedQuery> => {
                 
-                let args = new Args();
-                args.add(10);
-                // let result_ = tx.execute(`
-                // CREATE TABLE coffees2 (
-                //     id INTEGER PRIMARY KEY,
-                //     coffee_name TEXT NOT NULL,
-                //     price REAL NOT NULL
-                // );
-                // `, null);
-                let result2_ = tx.execute("INSERT INTO coffees VALUES (null, 'Colombian', 7.99);", null);
-                let result_ = tx.execute("INSERT INTO coffees VALUES (null, 'French_Roast', 8.99;", null);
-                // let result_ = tx.execute("INSERT INTO coffees VALUES (null, 'Espresso', 9.99);", null);
-                // let result_ = tx.execute("INSERT INTO coffees VALUES (null, 'Colombian_Decaf', 8.99);", null);
-                // let result_ = tx.execute("INSERT INTO coffees VALUES (null, 'French_Roast_Decaf', 9.99);", null);
+//                 let args = new Args();
+//                 args.add(10);
+//                 // let result_ = tx.execute(`
+//                 // CREATE TABLE coffees2 (
+//                 //     id INTEGER PRIMARY KEY,
+//                 //     coffee_name TEXT NOT NULL,
+//                 //     price REAL NOT NULL
+//                 // );
+//                 // `, null);
+//                 let result2_ = tx.execute("INSERT INTO coffees VALUES (null, 'Colombian', 7.99);", null);
+//                 let result_ = tx.execute("INSERT INTO coffees VALUES (null, 'French_Roast', 8.99;", null);
+//                 // let result_ = tx.execute("INSERT INTO coffees VALUES (null, 'Espresso', 9.99);", null);
+//                 // let result_ = tx.execute("INSERT INTO coffees VALUES (null, 'Colombian_Decaf', 8.99);", null);
+//                 // let result_ = tx.execute("INSERT INTO coffees VALUES (null, 'French_Roast_Decaf', 9.99);", null);
            
 
-                // let result_ = tx.query("SELECT * FROM Track LIMIT 10;");
-                // let result_ = tx.query("SELECT * FROM Track LIMIT 10;");
+//                 // let result_ = tx.query("SELECT * FROM Track LIMIT 10;");
+//                 // let result_ = tx.query("SELECT * FROM Track LIMIT 10;");
                 
-                return result_;
-            });
-            console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||");
+//                 return result_;
+//             });
+//             console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||");
             
-            if (result_.isOk) {
-                let result_query = result_.get();
-                console.log("statement " +result_query.statement.toString());
-                console.log("last_insert_id "+ result_query.last_insert_id.toString());
-                console.log("rows_affected "+result_query.rows_affected.toString());
-                console.log("size "+result_query.size.toString());
-                console.log("time "+result_query.time.toString());
+//             if (result_.isOk) {
+//                 let result_query = result_.get();
+//                 console.log("statement " +result_query.statement.toString());
+//                 console.log("last_insert_id "+ result_query.last_insert_id.toString());
+//                 console.log("rows_affected "+result_query.rows_affected.toString());
+//                 console.log("size "+result_query.size.toString());
+//                 console.log("time "+result_query.time.toString());
            
 
 
-                for (let i = 0; i < result_query.columns.length; i++) {
-                    console.log(result_query.columns[i].toString());
-                }
+//                 for (let i = 0; i < result_query.columns.length; i++) {
+//                     console.log(result_query.columns[i].toString());
+//                 }
 
-                for (let i = 0; i < result_query.rows.length; i++) {
-                    // console.log(result_query.rows[i].toString());
-                    let row = result_query.rows[i];
-                    for (let j = 0; j < row.length; j++) {
+//                 for (let i = 0; i < result_query.rows.length; i++) {
+//                     // console.log(result_query.rows[i].toString());
+//                     let row = result_query.rows[i];
+//                     for (let j = 0; j < row.length; j++) {
 
-                        if (row[j] != null) {
-                            let row_item = row[j] as Value;
-                            console.log(row_item.toString());
-                        }
+//                         if (row[j] != null) {
+//                             let row_item = row[j] as Value;
+//                             console.log(row_item.toString());
+//                         }
                         
-                    }
-                }
-            } else {
-                let e = result_.error();
-                if (e != null) {
-                    console.log(e.message);
-                }
+//                     }
+//                 }
+//             } else {
+//                 let e = result_.error();
+//                 if (e != null) {
+//                     console.log(e.message);
+//                 }
   
-            }
-        }
+//             }
+//         }
 
-    });
-});
+//     });
+// });
 
 // test("A test", () => {
 //     assert(true, "a test");
@@ -186,6 +186,32 @@ describe("database", () => {
 //         assert(42 == 42, "this test fails");
 //     });
 // });
+
+
+describe("fetch", () => {
+    test("get fetch", () => {
+        let rq: Request = new Request("https://httpbin.org/ip", {
+            method: null,
+            headers: null,
+            body:null,
+          });
+        
+        let result = fetch(rq);
+        if (result.isOk) {
+            let response = result.get();
+            console.log(response.status.toString());
+            console.log(response.statusText);
+            // console.log(response.headers.toString());
+            console.log(response.text());
+        } else {
+            let e = result.error();
+            if (e != null) {
+                console.log(e.message);
+            }
+        }
+        //   console.log(result.text());
+    });
+});
 
 _startTests();
 
