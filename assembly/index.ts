@@ -21,3 +21,4 @@ export { DatabaseError, ExecutedQuery, Args, Config, connect, Client, Transactio
 export { FileStat, FileSystem } from "./file";
 export { PutRequest, Drive } from "./drive";
 export { fetch } from "./fetch";
+export { crypto, HmacKeyGenParams, CryptoKey, RsaHashedKeyGenParams } from "./crypto";

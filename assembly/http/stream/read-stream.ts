@@ -1,7 +1,7 @@
 import { Decoder, Encoder, Sizer, Writer } from "@wapc/as-msgpack";
 import { hostCall } from "../../worker/wapc";
-import { ResetQueue } from "./abstract-ops/queue-with-sizes";
-import { ExtractHighWaterMark, ExtractSizeAlgorithm } from "./abstract-ops/queuing-strategy";
+// import { ResetQueue } from "./abstract-ops/queue-with-sizes";
+// import { ExtractHighWaterMark, ExtractSizeAlgorithm } from "./abstract-ops/queuing-strategy";
 
 class ReadReturn {
     chunk: ArrayBuffer = new ArrayBuffer(0);
@@ -207,161 +207,161 @@ export class ReadableStreamBodyReader implements ReadableStreamReader {
     }
 }
 
-export class ReadableStream2 {
-    private _controller: ReadableStreamController;
-    // private _detached: string;
-    private _disturbed: bool = false;
-    private _state: string = 'readable';
-    private _reader: ReadableStreamBodyReader | null = null;
-    private _storedError: Error | null = null;
+// export class ReadableStream2 {
+//     private _controller: ReadableStreamController;
+//     // private _detached: string;
+//     private _disturbed: bool = false;
+//     private _state: string = 'readable';
+//     private _reader: ReadableStreamBodyReader | null = null;
+//     private _storedError: Error | null = null;
 
-    constructor(underlying_source: UnderlyingSource, strategy: QueuingStrategy | null = null) {
-        const sizeAlgorithm = ExtractSizeAlgorithm(strategy);
-        const highWaterMark = ExtractHighWaterMark(strategy, 1);
+//     constructor(underlying_source: UnderlyingSource, strategy: QueuingStrategy | null = null) {
+//         const sizeAlgorithm = ExtractSizeAlgorithm(strategy);
+//         const highWaterMark = ExtractHighWaterMark(strategy, 1);
 
-        // underlying_source.start = underlying_source.start || (() => { });
-        // underlying_source.pull = underlying_source.pull || (() => { });
-        // underlying_source.cancel = underlying_source.cancel || (() => { });
+//         // underlying_source.start = underlying_source.start || (() => { });
+//         // underlying_source.pull = underlying_source.pull || (() => { });
+//         // underlying_source.cancel = underlying_source.cancel || (() => { });
 
-        const controller = new ReadableStreamDefaultController();
-        // this._controller = controller;
+//         const controller = new ReadableStreamDefaultController();
+//         // this._controller = controller;
 
        
 
-        // Need to set the slots so that the assert doesn't fire. In the spec the slots already exist implicitly.
-        // controller._queue = null;
-        // controller._queueTotalSize = null;
-        ResetQueue(controller);
+//         // Need to set the slots so that the assert doesn't fire. In the spec the slots already exist implicitly.
+//         // controller._queue = null;
+//         // controller._queueTotalSize = null;
+//         ResetQueue(controller);
       
-        // controller._started = false;
-        // controller._closeRequested = false;
-        // controller._pullAgain = false;
-        // controller._pulling = false;
+//         // controller._started = false;
+//         // controller._closeRequested = false;
+//         // controller._pullAgain = false;
+//         // controller._pulling = false;
       
-        controller._strategySizeAlgorithm = sizeAlgorithm;
-        controller._strategyHWM = highWaterMark;
+//         controller._strategySizeAlgorithm = sizeAlgorithm;
+//         controller._strategyHWM = highWaterMark;
       
-        controller._pullAlgorithm = underlying_source.start;
-        controller._cancelAlgorithm = underlying_source.cancel;
+//         controller._pullAlgorithm = underlying_source.start;
+//         controller._cancelAlgorithm = underlying_source.cancel;
       
-        this._controller = controller;
-        controller._stream = this;
+//         this._controller = controller;
+//         controller._stream = this;
 
-        underlying_source.start(controller);
+//         underlying_source.start(controller);
 
 
-        controller._started = true;
+//         controller._started = true;
 
-        assert(controller._pulling === false);
-        assert(controller._pullAgain === false);
+//         // assert(controller._pulling === false);
+//         // assert(controller._pullAgain === false);
   
-        ReadableStreamDefaultControllerCallPullIfNeeded(controller);
+//         // ReadableStreamDefaultControllerCallPullIfNeeded(controller);
 
 
 
-    }
-}
+//     }
+// }
 
-// export interface QueuingStrategy {
+// // export interface QueuingStrategy {
+// //     highWaterMark: u32 ;
+// //     size: (chunk: u32) => u32 ;
+// // }
+// // export interface UnderlyingSource {
+// //     start: (controller: ReadableStreamController) => void | null;
+// //     pull: (controller:ReadableStreamController) =>  void | null;
+// //     cancel: (reason:string) =>  void;
+// //     type: string | null;
+// //     autoAllocateChunkSize: u32;
+// // }
+
+// export class QueuingStrategy {
 //     highWaterMark: u32 ;
-//     size: (chunk: u32) => u32 ;
+//     size: (chunk: u32) => u32 = () => 1;
 // }
-// export interface UnderlyingSource {
-//     start: (controller: ReadableStreamController) => void | null;
-//     pull: (controller:ReadableStreamController) =>  void | null;
-//     cancel: (reason:string) =>  void;
+// export class UnderlyingSource {
+//     start: (controller: ReadableStreamController) => void = () => {};
+//     pull: (controller:ReadableStreamController) =>  void = () => {};
+//     cancel: (reason:string) =>  void = () => {};
 //     type: string | null;
-//     autoAllocateChunkSize: u32;
+//     autoAllocateChunkSize: u32 = -1;
 // }
 
-export class QueuingStrategy {
-    highWaterMark: u32 ;
-    size: (chunk: u32) => u32 = () => 1;
-}
-export class UnderlyingSource {
-    start: (controller: ReadableStreamController) => void = () => {};
-    pull: (controller:ReadableStreamController) =>  void = () => {};
-    cancel: (reason:string) =>  void = () => {};
-    type: string | null;
-    autoAllocateChunkSize: u32 = -1;
-}
 
 
+// let queuingStrategy:QueuingStrategy = {
+//     highWaterMark: 1,
+//     size: (chunk: u32) => {
+//         return chunk;
+//     }
+// }
+// let underlyingSource: UnderlyingSource = {
+//     start: (controller: ReadableStreamController) => {
+//         // controller.
+//         console.log("start");
+//     },
+//     // pull: (controller: ReadableStreamController) => {
+//     //     console.log("pull");
+//     // },
+//     cancel: (reason: string) => {
+//         console.log("cancel");
+//     }
+// }
 
-let queuingStrategy:QueuingStrategy = {
-    highWaterMark: 1,
-    size: (chunk: u32) => {
-        return chunk;
-    }
-}
-let underlyingSource: UnderlyingSource = {
-    start: (controller: ReadableStreamController) => {
-        // controller.
-        console.log("start");
-    },
-    // pull: (controller: ReadableStreamController) => {
-    //     console.log("pull");
-    // },
-    cancel: (reason: string) => {
-        console.log("cancel");
-    }
-}
+// let read_stream = new ReadableStream2(underlyingSource);
 
-let read_stream = new ReadableStream2(underlyingSource);
+// export interface ReadableStreamController{
+//     _queueTotalSize:u32
+//     // closed(): boolean;
+//     close(): void;
+//     enqueue(chunk:ArrayBuffer):void;
+//     error(e: Error): void;
+//     _cancelSteps(reason: ArrayBuffer): void;
+//     _pullSteps(readRequest: ArrayBuffer): void;
+//     _releaseSteps(): void;
+// }
 
-export interface ReadableStreamController{
-    _queueTotalSize:u32
-    // closed(): boolean;
-    close(): void;
-    enqueue(chunk:ArrayBuffer):void;
-    error(e: Error): void;
-    _cancelSteps(reason: ArrayBuffer): void;
-    _pullSteps(readRequest: ArrayBuffer): void;
-    _releaseSteps(): void;
-}
+// export class ReadableStreamDefaultController implements ReadableStreamController {
+//     _stream: ReadableStream2 | null = null;
+//     _queue:Array<ArrayBuffer> | null = null;
+//     _queueTotalSize:u32 = -1;
+//     _started: boolean = false;
+//     _closeRequested: boolean = false;
+//     _pullAgain: boolean = false;
+//     _pulling: boolean = false;
+//     _strategySizeAlgorithm: (chunk: u32) => u32 = () => 1;
+//     _strategyHWM: u32 = 1;
+//     _pullAlgorithm: (controller:ReadableStreamController) =>  void = () => {};;
+//     _cancelAlgorithm: (controller: string) => void = () => { };
 
-export class ReadableStreamDefaultController implements ReadableStreamController {
-    _stream: ReadableStream2 | null = null;
-    _queue:Array<ArrayBuffer> | null = null;
-    _queueTotalSize:u32 = -1;
-    _started: boolean = false;
-    _closeRequested: boolean = false;
-    _pullAgain: boolean = false;
-    _pulling: boolean = false;
-    _strategySizeAlgorithm: (chunk: u32) => u32 = () => 1;
-    _strategyHWM: u32 = 1;
-    _pullAlgorithm: (controller:ReadableStreamController) =>  void = () => {};;
-    _cancelAlgorithm: (controller: string) => void = () => { };
-
-    constructor() {
-    }
+//     constructor() {
+//     }
     
-    get desiredSize():u32 {
-        return 0;
-    }
+//     get desiredSize():u32 {
+//         return 0;
+//     }
 
-    close():void {
+//     close():void {
 
-    }
+//     }
 
-    enqueue(chunk:ArrayBuffer):void {
+//     enqueue(chunk:ArrayBuffer):void {
 
-    }
+//     }
 
-    error(e:Error):void {
+//     error(e:Error):void {
 
-    }
+//     }
 
-    _cancelSteps(reason:ArrayBuffer):void {
+//     _cancelSteps(reason:ArrayBuffer):void {
 
-    }
+//     }
 
-    _pullSteps(readRequest:ArrayBuffer):void {
+//     _pullSteps(readRequest:ArrayBuffer):void {
  
-    }
+//     }
 
-    _releaseSteps():void { }
+//     _releaseSteps():void { }
 
 
 
-}
+// }

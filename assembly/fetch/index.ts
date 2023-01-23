@@ -1,6 +1,6 @@
 import { Decoder, Writer, Encoder, Sizer } from "@wapc/as-msgpack";
 import { Headers, ReadableStream, Request, Response, ResponseInit } from "../http";
-import { ReadableStreamDefaultController } from "../http/stream/read-stream";
+// import { ReadableStreamDefaultController } from "../http/stream/read-stream";
 import { hostCall, Result } from "../worker/wapc";
 
 export class FetchInit {
@@ -252,7 +252,7 @@ export function fetch(request: Request, options: FetchInit | null = null): Resul
                 headers.set(header[0], header[1].split(","));
             }
 
-            let _controller: ReadableStreamDefaultController = new ReadableStreamDefaultController();
+            // let _controller: ReadableStreamDefaultController = new ReadableStreamDefaultController();
 
             let init = new ResponseInit();
             init.status = fetch_response.status;

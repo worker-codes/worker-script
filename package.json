@@ -9,6 +9,7 @@
     "asbuild:debug": "asc assembly/index.ts --use abort=assembly/index/abort --target debug",
     "asbuild:release": "asc assembly/index.ts --use abort=assembly/index/abort --target release",
     "asbuild:test": "asc testing/tests/add.ts --outFile testing/builds/myModule.wasm --textFile testing/builds/myModule.wat --use abort=testing/tests/add/abort",
+    "asbuild:test:crypto": "asc testing/tests/crypto.ts --outFile testing/builds/crypto.wasm --textFile testing/builds/crypto.wat --use abort=testing/tests/crypto/abort",
     "asbuild": "npm run asbuild:debug && npm run asbuild:release",
     "start": "npx serve .",
     "build:transform": "tsc -p ./transform"
